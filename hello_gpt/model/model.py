@@ -7,50 +7,6 @@ from torch.nn import functional as F
 from hello_gpt.model.normalisation import Normalisation
 from hello_gpt.model.decoder_transformer import DecoderTransformer
 
-"""
-GPT-2 Model Structure
------------------------------
-  ___________ 
- |           |       ____________________
- |   wte     |---->| Embedding Layer     |
- |___________|     | - Vocab Size        |
-     |             | - Embedding Dim     |
-     |             |_____________________|
-     |                
-     |             ____________________
-     |            | Embedding Layer     |
-     |----->| wpe | - Block Size        |
-     |            | - Embedding Dim     |
-     |            |_____________________|
-     |
-     |             ____________________
-     |            | Dropout Layer       |
-     |----->| drop| - Dropout Rate      |
-     |            |_____________________|
-     |
-     |             ____________________       ____________________
-     |            | Decoder Layer 1    |     | Decoder Layer N    |
-     |            | (Variable Layers)  | ... | (N from Config)    |
-     |----->|  h  | - Embedding Dim    |     | - Embedding Dim    |
-     |            | - Number of Heads  |     | - Number of Heads  |
-     |            | - Dropout          |     | - Dropout          |
-     |            | - Bias             |     | - Bias             |
-     |            |____________________|     |____________________|
-     |
-     |             ____________________
-     |----->| ln_f| Normalisation      |
-            |     | - Embedding Dim    |
-            |     | - Bias             |
-            |     |____________________|
-            |
-            |       ____________________
-            |----->| Linear Layer       |
-                   | - Output Vocab Size|
-                   | - Embedding Dim    |
-                   |____________________|
-
- * Note: wte.weight and lm_head.weight are shared.
-"""
 class HelloGPT(nn.Module):
     default_config = {
         'n_layer': 12,
