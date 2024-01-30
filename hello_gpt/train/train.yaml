@@ -1,0 +1,40 @@
+# I/O
+out_dir: 'checkpoints'
+checkpoint_name: 'checkpoint.pt'
+eval_interval: 2000
+log_interval: 1
+eval_iters: 200
+always_save_checkpoint: True
+
+# data
+gradient_accumulation_steps: 40
+batch_size: 12
+block_size: 1024
+
+# model
+n_layer: 12
+n_head: 12
+n_embd: 768
+dropout: 0.0
+bias: False
+vocab_size: 50304
+
+# adamw optimizer
+learning_rate: 0.0006
+max_iters: 600000
+weight_decay: 0.1
+beta1: 0.9
+beta2: 0.95
+grad_clip: 1.0
+
+# learning rate decay settings
+decay_lr: True
+warmup_iters: 2000
+lr_decay_iters: 600000
+min_lr: 0.00006
+
+# system
+device_type: 'cuda'
+device: 'cuda'
+data_type: 'float16'
+dmax_flops: 5.44e12

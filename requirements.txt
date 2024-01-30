@@ -1,0 +1,8 @@
+torch >= 2.0
+numpy 
+transformers 
+datasets 
+tiktoken 
+wandb 
+tqdm
+halo

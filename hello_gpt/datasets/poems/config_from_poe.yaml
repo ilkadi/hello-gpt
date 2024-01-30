@@ -1,0 +1,26 @@
+eval_interval: 250
+eval_iters: 200
+log_interval: 10
+always_save_checkpoint: false
+gradient_accumulation_steps: 1
+
+# data
+dataset: 'poems'
+checkpoint_name: 'poems_from_poe.pt'
+batch_size: 4
+block_size: 256
+
+# model
+n_layer: 12
+n_head: 12
+n_embd: 384
+dropout: 0.0
+bias: False
+vocab_size: 50304
+
+learning_rate: 0.0001
+max_iters: 750
+lr_decay_iters: 500
+min_lr: 0.0000001
+beta2: 0.99
+warmup_iters: 100

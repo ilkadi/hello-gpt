@@ -1,0 +1,13 @@
+eval_interval: 5
+eval_iters: 40
+always_save_checkpoint: False
+gradient_accumulation_steps: 1
+
+dataset: 'poems'
+checkpoint_name: 'poems_hugs'
+batch_size: 2
+gradient_accumulation_steps: 32
+max_iters: 40
+
+learning_rate: 0.000005
+decay_lr: False
