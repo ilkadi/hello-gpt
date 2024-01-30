@@ -39,7 +39,7 @@ ModelTrainer --> ModelInitializer --> HelloGPT
 
 The project is organized into several directories:
 
-- `checkpoints/`: Contains pre-trained model weights.
+- `checkpoints/`: The target directory for pre-trained model weights.
 - `hello_gpt/`: Contains the main source code for the project.
   - `datasets/`: Contains the datasets used for training and testing the model.
   - `model/`: Contains the implementation of the GPT model and its components.
@@ -69,7 +69,7 @@ python -m hello_gpt.train.model_runner --checkpoint="poems_hugs.pt" --gpt2base="
 ```
 Here we specify the checkpoint name (in `checkpoints` directory) and we unfortunately need to add a custom flag to notify the code that it is to follow a special model initialization process based on the hugging face implementation of GPT2.
 
-Under the hood, the `model_runner` script would load `train/train.yaml` config, update it with `model_run.yaml` contents and (optionaly) update with any other config supplied via `--config` flag. 
+Under the hood, the `model_runner` script would load `train/train.yaml` config, update it with `model_run.yaml` contents and (optionaly) update with any other config supplied via `--config` flag. Please note that checkpoints are not included as those are big files (500MB+).
 
 Running the above command would execute the smallest GPT2 model tuned on the poems dataset (`poems_hugs.pt` checkpoint):
 ```

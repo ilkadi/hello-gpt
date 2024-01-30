@@ -160,5 +160,6 @@ cython_debug/
 #.idea/
 
 
-#bin files
+#bin and pt files (prepared text data and model weights)
 *.bin
+*.pt
