@@ -124,10 +124,10 @@ class TestHelloGPT(unittest.TestCase):
     def test_estimate_mfu(self):
         # Define the parameters for the test
         fwdbwd_per_iter = 1000
-        dt_ms = 0.01
+        dt_s = 3
 
         # Call the method under test
-        mfu = self.model.estimate_mfu(fwdbwd_per_iter, dt_ms)
+        mfu = self.model.estimate_mfu(fwdbwd_per_iter, dt_s)
 
         # Calculate the expected model flops utilisation manually
         L = self.model.config['n_layer']
@@ -146,7 +146,7 @@ class TestHelloGPT(unittest.TestCase):
         # The remaining 4Q likely for the scaling of the dot product by 1/sqrt(Q), the addition of the value vector, and the softmax operation.
         # Note: it is an approximation assuming that the model performs the same number of operations for each token in the sequence.
         flops_per_token = 6 * self.model.n_params + 12 * L * H * Q * T
-        flops_achieved = flops_per_token * T * fwdbwd_per_iter * 1000 / dt_ms
+        flops_achieved = flops_per_token * T * fwdbwd_per_iter / dt_s
         flops_promised = float(self.model.config['dmax_flops'])
         expected_mfu = flops_achieved / flops_promised
 

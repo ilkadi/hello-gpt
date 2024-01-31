@@ -99,10 +99,10 @@ class HelloGPT(nn.Module):
         print(f"AdamW optimizer enabled: {use_fused}")
         return optimizer
 
-    def estimate_mfu(self, fwdbwd_per_iter, dt_ms):
+    def estimate_mfu(self, fwdbwd_per_iter, dt_s):
         L, H, Q, T = self.config['n_layer'], self.config['n_head'], self.config['n_embd']//self.config['n_head'], self.config['block_size']
         flops_per_token = 6*self.n_params + 12*L*H*Q*T
-        flops_achieved = flops_per_token * T * fwdbwd_per_iter * 1000 / dt_ms 
+        flops_achieved = flops_per_token * T * fwdbwd_per_iter / dt_s 
         flops_promised = float(self.config['dmax_flops'])
         mfu = flops_achieved / flops_promised
         return mfu

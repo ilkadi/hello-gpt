@@ -59,13 +59,13 @@ class MonitoringController:
         self.t0 = time.time()
 
     def save_checkpoint(self, iter_num, current_loss, best_val_loss):
-        if current_loss < best_val_loss or self.config.always_save_checkpoint:
+        if current_loss < best_val_loss or self.config['always_save_checkpoint']:
             checkpoint = {
                 'model': self.model.state_dict(),
                 'optimizer': self.optimizer.state_dict(),
                 'model_args': self.model_args,
                 'iter_num': iter_num,
-                'best_val_loss': best_val_loss,
+                'best_val_loss': current_loss,
                 'config': self.config,
             }
             print(f"saving checkpoint to {self.config['out_dir']}")
@@ -93,9 +93,9 @@ class MonitoringController:
             self.save_checkpoint(iter_num, losses['validate'], best_val_loss)
 
     def calc_model_flops_utilisation(self, iter_num, loss):
-        t1 = time.time()
-        dt = t1 - self.t0
         if iter_num % self.config['log_interval'] == 0:
+            t1 = time.time()
+            dt = t1 - self.t0
             lossf = loss.item() * self.config['gradient_accumulation_steps']
             mfu = self.model.estimate_mfu(self.config['batch_size'] * self.config['gradient_accumulation_steps'], dt)
             self.running_mfu = mfu if self.running_mfu == -1.0 else 0.9 * self.running_mfu + 0.1 * mfu

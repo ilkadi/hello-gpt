@@ -6,7 +6,7 @@ gradient_accumulation_steps: 1
 
 # data
 dataset: 'poems'
-checkpoint_name: 'poems_from_poe.pt'
+checkpoint_name: 'poems_from_poe'
 batch_size: 4
 block_size: 256
 
