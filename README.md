@@ -59,6 +59,7 @@ pip install -r requirements.txt
 Note that there are further optimisations available for newer GPUs but not implemented in this code.
 To run unittests, from the root directory run:
 ```
+cd hello-gpt
 python -m unittest discover tests
 ```
 
