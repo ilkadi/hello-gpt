@@ -78,7 +78,7 @@ class ModelInitializer:
         return model, model_args, optimizer
 
     def setup_model(self, model_args):
-        model = model = self.from_pretrained(self.gpt2base, model_args) if self.gpt2base else HelloGPT(model_args)
+        model = self.from_pretrained(self.gpt2base, model_args) if self.gpt2base else HelloGPT(model_args)
         torch_checkpoint = None
         
         if self.checkpoint:
@@ -102,7 +102,8 @@ class ModelInitializer:
             'gpt2-large':   dict(n_layer=36, n_head=20, n_embd=1280),
             'gpt2-xl':      dict(n_layer=48, n_head=25, n_embd=1600),
         }
-        assert gpt2base in supported_gpts.keys()
+        if not gpt2base in supported_gpts:
+            raise ValueError(f"Parameter {gpt2base} not recognised, expected one in [{supported_gpts.keys()}].")
         
         from transformers import GPT2LMHeadModel
         print("GPT2 enforcing: vocab_size=50257, block_size=1024, bias=True")
