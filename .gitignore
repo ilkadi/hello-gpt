@@ -161,5 +161,6 @@ cython_debug/
 
 
 #bin and pt files (prepared text data and model weights)
-*.bin
+train.bin
+validate.bin
 *.pt
