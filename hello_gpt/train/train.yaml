@@ -37,4 +37,4 @@ min_lr: 0.00006
 device_type: 'cuda'
 device: 'cuda'
 data_type: 'float16'
-dmax_flops: 5.44e12
+dmax_flops: 10.87e12 # NV 1660 Ti: float16

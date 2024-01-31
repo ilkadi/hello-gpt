@@ -99,16 +99,19 @@ class HelloGPT(nn.Module):
         print(f"AdamW optimizer enabled: {use_fused}")
         return optimizer
 
-    def estimate_mfu(self, fwdbwd_per_iter, dt):
+    def estimate_mfu(self, fwdbwd_per_iter, dt_ms):
         L, H, Q, T = self.config['n_layer'], self.config['n_head'], self.config['n_embd']//self.config['n_head'], self.config['block_size']
         flops_per_token = 6*self.n_params + 12*L*H*Q*T
-        flops_achieved = flops_per_token * T * fwdbwd_per_iter /dt 
+        flops_achieved = flops_per_token * T * fwdbwd_per_iter * 1000 / dt_ms 
         flops_promised = float(self.config['dmax_flops'])
         mfu = flops_achieved / flops_promised
         return mfu
 
     @torch.no_grad()
     def run_model(self, idx, max_new_tokens, temperature, top_k):
+        if idx.min() < 0 or idx.max() >= self.config['vocab_size']:
+            raise ValueError(f"All indices must be between 0 and 'vocab_size - 1'. Got {idx.min()} and {idx.max()} on vocab_size {self.config['vocab_size']}.")
+        
         for _ in range(max_new_tokens):
             idx_cond = idx if idx.size(1) <= self.config['block_size'] else idx[:, -self.config['block_size']:]
             logits, _ = self(idx_cond)
