@@ -47,7 +47,7 @@ The project is organized into several directories:
 - `requirements.txt`: Lists the Python dependencies required by the project.
 - `setup.py`: Script for packaging the project.
 
-## Installation
+## Installation and testing
 
 To use 'cuda' device, follow [NVIDIA Docs](https://developer.nvidia.com/cuda-downloads).
 And install a correct version of [PyTorch](https://pytorch.org/).
@@ -57,6 +57,10 @@ To install the project's dependencies, run the following command:
 pip install -r requirements.txt
 ```
 Note that there are further optimisations available for newer GPUs but not implemented in this code.
+To run unittests, from the root directory run:
+```
+python -m unittest discover tests
+```
 
 ## How to Run
 The project offers `train`, `tune` and `run` modes.

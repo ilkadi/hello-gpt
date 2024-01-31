@@ -1,4 +1,9 @@
 # Hello-GPT architecture overview
+
+In depth fabulous visualisation of GPT architecture: https://bbycroft.net/llm
+
+Simplified meowalization for our readme.
+
 ```
 Hello-GPT Model Structure (GPT2-based)
 --------------------------------------

@@ -44,5 +44,3 @@ hello_gpt Project Structure - Purpose-Oriented Meowalization
   - The 'model' directory contains all the components necessary for the model's architecture.
   - The 'train' directory involves training aspects, including controllers and configurations.
 ```
-# TODO
-Tests for all scripts (in progress)
