@@ -57,8 +57,10 @@ Please keep in mind that the defaul configuration (`hello_gpt/train/train.yaml`)
 
 ## Installation and testing
 
+The project was built and tested with `Python3.9`.
+
 To use 'cuda' device, follow [NVIDIA Docs](https://developer.nvidia.com/cuda-downloads).
-And install a correct version of [PyTorch](https://pytorch.org/).
+Manually install a correct version of [PyTorch](https://pytorch.org/).
 
 To install the project's dependencies, run the following command:
 ```
