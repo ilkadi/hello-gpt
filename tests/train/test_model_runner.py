@@ -98,7 +98,7 @@ class TestModelRunner(unittest.TestCase):
         runner.run_model()
         output = mock_stdout.getvalue()
         self.assertIn("Starting the interactive console..", output)
-        # cannot assert inputs, as the input is not printed to the console
+        # cannot assert inputs
         self.mock_model.run_model.assert_called()
         self.assertEqual(self.mock_model.run_model.call_count, 2)
 

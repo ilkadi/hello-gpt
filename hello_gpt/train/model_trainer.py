@@ -37,6 +37,8 @@ class ModelTrainer:
             self.monitoring_controller.optionally_store_checkpoint(iter_num, best_val_loss)
             loss = self.micro_train()
             self.monitoring_controller.calc_model_flops_utilisation(iter_num, loss)
+            
+        print("Training process completed.")
 
     def set_optimizer_lr(self, optimizer, epoch):
         if not self.config["decay_lr"]:

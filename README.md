@@ -2,6 +2,7 @@
 
 Hello-GPT is a project that implements a simple version of the GPT model. 
 It's designed to experiment with language models in a hands-on way.
+While it was written for use on small personal machines, it does not require many modifications for multi-node multi-gpu execution settings.
 
 ## Acknowledgements
 
@@ -47,6 +48,13 @@ The project is organized into several directories:
 - `requirements.txt`: Lists the Python dependencies required by the project.
 - `setup.py`: Script for packaging the project.
 
+## How to Run
+With hello-gpt you can train your models from zero, tune those models on specific datasets and run them. 
+You also can run pre-trained gpt2 hugging face models or finetune them on your datasets.
+The sections below provide the basic out-of-the-box instructions for those functionalities.
+
+Please keep in mind that the defaul configuration (`hello_gpt/train/train.yaml`) assumes the use of `cuda` device. If you don't have `cuda` installed, you might want to change device and device type to `cpu` in this config.
+
 ## Installation and testing
 
 To use 'cuda' device, follow [NVIDIA Docs](https://developer.nvidia.com/cuda-downloads).
@@ -62,18 +70,20 @@ To run unittests, from the root directory run:
 python -m unittest discover tests
 ```
 
-## How to Run
-The project offers `train`, `tune` and `run` modes.
-For all of those modes a configuration needs to be specified. 
-
 ### Run mode
-From the root directory run the following command:
+#### Hugging face models
+The simplest possible way to run is to run with the pre-trained hugging face model. To do it, from the root directory run:
+```
+python -m hello_gpt.train.model_runner --gpt2base="gpt2"
+```
+This will download the base model (might take a bit of time) and start an interactive dialog in terminal. It is not a trained assistant, so user prompts simply provide a context for model to produce outputs. Supported hugging-face gpt2 models are (from the smallest to the biggest): `gpt2, gpt2-medium, gpt2-large, gpt2-xl`. Note that most of the project tests were run on `gpt2` model on laptop with `6Gb` VRAM.
+
+#### Tuned hugging face models
+Lets assume that you have a checkpoint for custom-tuned hugging face model (should be possible after you have a look into the training part of the readme). From the root directory run the following command:
 ```
 python -m hello_gpt.train.model_runner --checkpoint="poems_hugs.pt" --gpt2base="gpt2"
 ```
 Here we specify the checkpoint name (in `checkpoints` directory) and we unfortunately need to add a custom flag to notify the code that it is to follow a special model initialization process based on the hugging face implementation of GPT2.
-
-Under the hood, the `model_runner` script would load `train/train.yaml` config, update it with `model_run.yaml` contents and (optionaly) update with any other config supplied via `--config` flag. Please note that checkpoints are not included as those are big files (500MB+).
 
 Running the above command would execute the smallest GPT2 model tuned on the poems dataset (`poems_hugs.pt` checkpoint):
 ```
@@ -101,29 +111,78 @@ Do you want to continue? (yes/no): no
 ```
 ...and there is some responce, not too poetic to be honest.
 
+#### Custom-trained models and configs
+Under the hood, the `model_runner.py` script would load `train/train.yaml` config, update it with `model_run.yaml` contents and (optionaly) update with any other config supplied via `--config` flag. 
+
+In this project you can find an example setup for the custom trained model: `datasets/edgar_poer/config_ext.yaml` specifies a model smaller than the gpt2. Assuming that you have followed the steps specified below to train the model, you can now run your very own model with the following command:
+```
+python -m hello_gpt.train.model_runner --checkpoint="edgar_poe.pt" --config="hello_gpt/datasets/edgar_poe/config_ext.yaml"
+```
+The script would load checkpoint stored on the root level of the project (`checkpoints` directory created on the same level as the `hello_gpt` and `tests` one) with the help of the config. Again an interactive console will appear:
+```
+Starting the interactive console..
+>: hey
+hey would have been beyond what is
+      the essence in question.”
+
+      “There are merely a genius,” says Le Soleil, “but it really
+      may be in the reason possible reason.”
+
+      “That is a good time,” said Dupin.
+
+      “I have, of course; and I have, first, as it is, a common
+      case, that this gentleman is a fool, I may, in a case, as well as
+      an observation of the metaphysician; for to write at once, I shall
+      attempt to bid you can above him again.”
+
+      At length, looking towards him, and looking for breath I thought
+      to keep him immediately
+```
+...but one night-long training on a laptop GPU probably won't give you that much of an output.
+
+#### Custom-trained tuned models
+In this repository you also can find sufficient resources to finetune model on a dataset. Assuming that you have a checkpoint of a fine-tuned model with a config of what it was fine-tuned on (`datasets/poems/confiig_from_poe.yaml` is the ready to use one) you can run it just like you would run model normally:
+```
+python -m hello_gpt.train.model_runner --checkpoint="poems_from_poe.pt" --config="hello_gpt/datasets/poems/config_from_poe.yaml"
+```
+and you can enjoy the output:
+```
+Starting the interactive console..
+>: O Freedom!
+O Freedom!
+                                      To the
+    the the the the
+                                   And the, are its the
+```
+
 ### Train and Tune modes
+#### Convert datasets into bin format
 Before training or tuning the model, datasets needs to be prepared first.
 ```
 python -m hello_gpt.datasets.txt2token_converter --input_path="hello_gpt/datasets/poems" --output_dir_path="hello_gpt/datasets/poems"
 ```
 The `txt2token_converter` tool is used to load a file or a directory of text files and to output `train.bin` and `validate.bin` into a specified directory.
 
+#### Train from zero
 Once you have the `.bin` output, you might want to check if configuration parameters are to your liking in `datasets` directory. 
-Configuration files follow the same philosophy: `model/train.yaml` has all of the basic configuration information, which gets updated (overriden) on specific fields specified with `--config` flag. Additionally you can specify a checkpoint to continue training from the previous point:
+Configuration files follow the same philosophy: `train/train.yaml` has all of the basic configuration information, which gets updated (overriden) on specific fields specified with `--config` flag. The below command assumes that `datasets/edgar_poe` has relevant `bin` files and utilisies the config to train the custom model:
 ```
-python -m hello_gpt.train.train --config="hello_gpt/datasets/poems/config_from_poe.yaml" --checkpoint="edgar_poe.pt"
+python -m hello_gpt.train.model_trainer --config="hello_gpt/datasets/poems/config_from_poe.yaml"
 ```
-Specifying or not specifying a checkpoint makes all the difference between `training` and `tuning`. Note however that tuning wasn't tested well for cases of model differences and you are likely to see a screen of errors if you would try to tune incompatible model. I'll do my best to fix this soon.
 
+#### Train from previous checkpoint
+Additionally you can specify a checkpoint to continue training from the previous checkpoint:
+```
+python -m hello_gpt.train.model_trainer --config="hello_gpt/datasets/poems/config_from_poe.yaml" --checkpoint="edgar_poe.pt"
+```
+Specifying or not specifying a checkpoint makes all the difference between `training` and `tuning`. In other words it is pretty much the same process. Tuning simply loads model parameters from the file instead of having a random initialisation. 
+
+#### Tune hugging face models
 To tune pre-trained GPT2 models, all what you need to do is to have a tuning config and to use one of the supported by hugging face gpt models (gpt2, gpt2-medium, gpt2-large, gpt2-xl):
 ```
-python -m hello_gpt.train.train --config="hello_gpt/datasets/poems/config_from_hug.yaml" --gpt2base="gpt2"
+python -m hello_gpt.train.model_trainer --config="hello_gpt/datasets/poems/config_from_hug.yaml" --gpt2base="gpt2"
 ```
 Note however, that larger models are likely to take more than 6GB of video memory.
-
-There are two pretrained checkpoints already included with the project.
-`edgar_poe.pt` is the model trained from scratch on laptop gpu for a few hours. It has a smaller custom configuration and achieved a loss of around `2` on that small training set.
-`poems_hugs.pt` is the tuned on `poems` dataset smallest GPT2 model.
 
 ## License
 This project is licensed under the terms of the LICENSE file.
