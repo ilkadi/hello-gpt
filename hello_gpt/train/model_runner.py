@@ -14,7 +14,10 @@ class ModelRunner:
     def decode(self, l): 
         return self.encoding.decode(l)
     
-    def __init__(self, config_ext, checkpoint, gpt2base):
+    def __init__(self, config_ext=None, checkpoint=None, gpt2base=None):
+        if (config_ext is None or checkpoint is None) and gpt2base is None:
+            raise ValueError("Please either select custom-trained model checkpoint with respective config or a hugging face model.")
+        
         config_helper = ConfigHelper()
         config = config_helper.update_with_config({}, 'hello_gpt/train/train.yaml')
         config = config_helper.update_with_config(config, 'hello_gpt/train/model_run.yaml')
@@ -28,7 +31,7 @@ class ModelRunner:
         print("Starting the interactive console..")
         spinner = Halo(text='begging the oracle', spinner='dots')
         while True:
-            user_input = input(">:")
+            user_input = input(">: ")
             start_ids = self.encode(user_input)
             x = (torch.tensor(start_ids, dtype=torch.long, device=self.config["device"])[None, ...])
             spinner.start()
@@ -47,9 +50,12 @@ def main(config, checkpoint, gpt2base):
     runner.run_model()
             
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Start the model run.')
+    parser = argparse.ArgumentParser(description="""Start the model run. 
+    Use --checkpoint flag to load a specific checkpoint. 
+    Use --gpt2base to load a specific huggingface gpt2 model. 
+    Use both for tuned gpt2 models.""")
     parser.add_argument('--config', type=str, required=False, help='Path to the configuration file extension (optional override).')
-    parser.add_argument('--checkpoint', type=str, required=True, help='Name of the checkpoint stored in the <out_dir>.')
+    parser.add_argument('--checkpoint', type=str, required=False, help='Name of the checkpoint stored in the <out_dir>.', default=None)
     parser.add_argument('--gpt2base', type=str, required=False, help='Hugging face GPT2 base model.', default=None)
     args = parser.parse_args()
 
