@@ -9,9 +9,9 @@ from hello_gpt.model.mlp import MultiLayerPerceptron
 | (x)         |      | (norm_1)       |      | Attention    |      | (norm_2)       |      | Perceptron  |      | (x)          |
 |             |      |                |      | (attn)       |      |                |      | (mlp)       |      |              |
 +-------------+      +----------------+      +--------------+      +----------------+      +-------------+      +--------------+
-    |                      |                           ^                        |                ^                  ^
-    |                      |                           |                        |                |                  |
-    +----------------------+-------- Residual ---------+------- Connections ----+-----------------------------------+
+    |                                             ^    |                                        ^                  
+    |                                             |    |                                        |                  
+    +------------------------------- Residual ----+    +------- Connections --------------------+
 """
 class DecoderTransformer(AbstractGPTModule):
     def __init__(self, n_embd, n_head, dropout, bias=False):
