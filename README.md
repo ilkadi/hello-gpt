@@ -3,6 +3,7 @@
 Hello-GPT is a project that implements a simple version of the GPT model. 
 It's designed to experiment with language models in a hands-on way.
 While it was written for use on small personal machines, it does not require many modifications for multi-node multi-gpu execution settings.
+For a soft introduction, please read the post on [cyber-observer.blogspot.com](https://cyber-observer.blogspot.com/2024/02/hello-gpt-building-gpt-from-zero.html).
 
 ## Acknowledgements
 
