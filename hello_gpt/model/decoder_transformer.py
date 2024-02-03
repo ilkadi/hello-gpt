@@ -4,14 +4,14 @@ from hello_gpt.model.self_attention import SelfAttention
 from hello_gpt.model.mlp import MultiLayerPerceptron
 
 """ Meowalization diagram for the Decoder Transformer module:
-+-------------+      +----------------+      +--------------+      +----------------+      +-------------+      +--------------+
-| Input       | ---> | Normalisation  | ---> | Self         | ---> | Normalisation  | ---> | Multi-Layer | ---> | Output       |
-| (x)         |      | (norm_1)       |      | Attention    |      | (norm_2)       |      | Perceptron  |      | (x)          |
-|             |      |                |      | (attn)       |      |                |      | (mlp)       |      |              |
-+-------------+      +----------------+      +--------------+      +----------------+      +-------------+      +--------------+
-    |                                             ^    |                                        ^                  
-    |                                             |    |                                        |                  
-    +------------------------------- Residual ----+    +------- Connections --------------------+
++-------------+       +----------------+      +--------------+          +----------------+      +-------------+       +--------------+
+| Input       | --+-> | Normalisation  | ---> | Self         | --+--+-> | Normalisation  | ---> | Multi-Layer | --+-> | Output       |
+| (x)         |   |   | (norm_1)       |      | Attention    |   ^  |   | (norm_2)       |      | Perceptron  |   ^   | (x)          |
+|             |   |   |                |      | (attn)       |   |  |   |                |      | (mlp)       |   |   |              |
++-------------+   |   +----------------+      +--------------+   |  |   +----------------+      +-------------+   |   +--------------+
+                  |                                              |  |                                             |     
+                  |                                              |  |                                             |     
+                  +------------------ Residual  -----------------+  +--------------- Connections -----------------+
 """
 class DecoderTransformer(AbstractGPTModule):
     def __init__(self, n_embd, n_head, dropout, bias=False):
